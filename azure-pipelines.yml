@@ -72,3 +72,15 @@ stages:
                   appType: 'webApp'
                   appName: 'dopham-app'
                   package: '$(Pipeline.Workspace)/drop/*.jar'
+
+              # Set startup command cho Linux App Service
+              - task: AzureCLI@2
+                inputs:
+                  azureSubscription: "dopham-sc"
+                  scriptType: "bash"
+                  scriptLocation: "inlineScript"
+                  inlineScript: |
+                    az webapp config set \
+                      --resource-group my-resource-group \
+                      --name my-springboot-app \
+                      --startup-file "java -jar /home/site/wwwroot/*.jar"
