@@ -9,6 +9,9 @@ trigger:
 pool:
   name: Default
 
+variables:
+- group: kv-secrets
+
 steps:
 - checkout: self
 
@@ -27,3 +30,6 @@ steps:
     mavenAuthenticateFeed: false
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
+  env:
+    DB_USER: $(DB-USER)
+    DB_PASSWORD: $(DB-PASSWORD)
