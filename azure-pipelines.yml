@@ -31,5 +31,5 @@ steps:
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
   env:
-    DB_USER: $(DB-USER)
+    DB_USERNAME: $(DB-USER)
     DB_PASSWORD: $(DB-PASSWORD)
