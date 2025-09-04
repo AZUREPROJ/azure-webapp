@@ -6,30 +6,69 @@
 trigger:
 - main
 
-pool:
-  name: Default
 
 variables:
 - group: kv-secrets
 
-steps:
-- checkout: self
+stages:
+# Stage 1: Build
+- stage: Build
+  displayName: Build Spring Boot App
+  jobs:
+  - job: Build
+    displayName: Build Job
+    pool:
+      name: Default
+    steps:
+    - checkout: self
 
-- script: java -version
-  displayName: 'Check Java version'
+    - script: java -version
+      displayName: 'Check Java version'
 
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    javaHomeOption: 'Path'
-    jdkDirectory: '$(JAVA_HOME)'
-    mavenVersionOption: 'Default'
-    mavenOptions: '-Xmx3072m'
-    mavenAuthenticateFeed: false
-    effectivePomSkip: false
-    sonarQubeRunAnalysis: false
-  env:
-    DB_USERNAME: $(DB-USER)
-    DB_PASSWORD: $(DB-PASSWORD)
+    - task: Maven@3
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'Path'
+        jdkDirectory: '$(JAVA_HOME)'
+        mavenVersionOption: 'Default'
+        mavenOptions: '-Xmx3072m'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+      env:
+        DB_USERNAME: $(DB-USER)
+        DB_PASSWORD: $(DB-PASSWORD)
+
+    # Publish JAR as pipeline artifact để dùng cho stage Deploy
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(System.DefaultWorkingDirectory)/target'
+        artifact: 'drop'
+        publishLocation: 'pipeline'
+
+# Stage 2: App Deploy
+- stage: Deploy
+  displayName: 'Deploy to Azure WebApp'
+  condition: succeeded()
+  jobs:
+    - deployment: DeployWebApp
+      displayName: 'Deploy Spring Boot JAR'
+      environment: dopham-env
+      pool:
+        name: Default
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - download: current
+                artifact: drop
+
+              # Deploy artifact lên Azure App Service
+              - task: AzureWebApp@1
+                inputs:
+                  azureSubscription: 'dopham-sc'
+                  appType: 'webApp'
+                  appName: 'dopham-app'
+                  package: '$(Pipeline.Workspace)/drop/*.jar'
