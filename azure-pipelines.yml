@@ -75,7 +75,7 @@ stages:
               - task: AzureWebApp@1
                 inputs:
                   azureSubscription: 'dopham-sc'
-                  appType: 'webApp'
+                  appType: 'webAppLinux'
                   appName: 'dopham-app'
                   package: '$(Pipeline.Workspace)/drop/*.jar'
 
