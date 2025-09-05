@@ -89,24 +89,24 @@ stages:
               #       --startup-file "java -jar /home/site/wwwroot/app.jar"
 
               # Push secrets từ variable group vào App Service settings
-              # - task: AzureAppServiceSettings@1
-              #   inputs:
-              #     azureSubscription: 'dopham-sc'
-              #     appName: 'dopv3-app'
-              #     resourceGroupName: 'rg_fsa_f1_csm_ec_huutn'
-              #     appSettings: |
-              #       [
-              #         {
-              #           "name": "DB_USERNAME",
-              #           "value": "$(DB-USER)",
-              #           "slotSetting": false
-              #         },
-              #         {
-              #           "name": "DB_PASSWORD",
-              #           "value": "$(DB-PASSWORD)",
-              #           "slotSetting": false
-              #         }
-              #       ]
+              - task: AzureAppServiceSettings@1
+                inputs:
+                  azureSubscription: 'dopham-sc'
+                  appName: 'dopv3-app'
+                  resourceGroupName: 'rg_fsa_f1_csm_ec_huutn'
+                  appSettings: |
+                    [
+                      {
+                        "name": "DB_USERNAME",
+                        "value": "$(DB-USER)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "DB_PASSWORD",
+                        "value": "$(DB-PASSWORD)",
+                        "slotSetting": false
+                      }
+                    ]
 
 
               # Deploy artifact lên Azure App Service
