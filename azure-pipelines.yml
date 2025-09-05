@@ -77,16 +77,16 @@ stages:
                 displayName: "Verify downloaded artifact"
 
               # Set startup command cho Linux App Service
-              - task: AzureCLI@2
-                inputs:
-                  azureSubscription: "dopham-sc"
-                  scriptType: "ps"
-                  scriptLocation: "inlineScript"
-                  inlineScript: |
-                    az webapp config set `
-                    --resource-group rg_fsa_f1_csm_ec_huutn `
-                    --name dopham-app `
-                    --startup-file "java -jar /home/site/wwwroot/app.jar"
+              # - task: AzureCLI@2
+              #   inputs:
+              #     azureSubscription: "dopham-sc"
+              #     scriptType: "ps"
+              #     scriptLocation: "inlineScript"
+              #     inlineScript: |
+              #       az webapp config set `
+              #       --resource-group rg_fsa_f1_csm_ec_huutn `
+              #       --name dopham-app `
+              #       --startup-file "java -jar /home/site/wwwroot/app.jar"
 
 
               # Deploy artifact lên Azure App Service
@@ -94,7 +94,7 @@ stages:
                 inputs:
                   azureSubscription: 'dopham-sc'
                   appType: 'webAppLinux'
-                  appName: 'dopham-app'
+                  appName: 'dopv3-app'
                   package: '$(Pipeline.Workspace)/drop/app.jar'
                   runtimeStack: 'JAVA|17-java17'
 
