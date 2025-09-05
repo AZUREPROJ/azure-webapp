@@ -41,10 +41,16 @@ stages:
         DB_USERNAME: $(DB-USER)
         DB_PASSWORD: $(DB-PASSWORD)
 
+    # Rename JAR thành tên cố định app.jar
+    - script: |
+        JAR_FILE=$(ls target/*.jar | grep -v 'original' | head -n 1)
+        mv "$JAR_FILE" target/app.jar
+      displayName: 'Rename JAR to app.jar'
+
     # Publish JAR as pipeline artifact để dùng cho stage Deploy
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/target'
+        targetPath: '$(System.DefaultWorkingDirectory)/target/app.jar'
         artifact: 'drop'
         publishLocation: 'pipeline'
 
@@ -70,6 +76,18 @@ stages:
                   dir "$(Pipeline.Workspace)/drop"
                 displayName: "Verify downloaded artifact"
 
+              # Set startup command cho Linux App Service
+              - task: AzureCLI@2
+                inputs:
+                  azureSubscription: "dopham-sc"
+                  scriptType: "ps"
+                  scriptLocation: "inlineScript"
+                  inlineScript: |
+                    az webapp config set `
+                    --resource-group rg_fsa_f1_csm_ec_huutn `
+                    --name dopham-app `
+                    --startup-file "java -jar /home/site/wwwroot/app.jar"
+
 
               # Deploy artifact lên Azure App Service
               - task: AzureWebApp@1
@@ -77,16 +95,7 @@ stages:
                   azureSubscription: 'dopham-sc'
                   appType: 'webAppLinux'
                   appName: 'dopham-app'
-                  package: '$(Pipeline.Workspace)/drop/*.jar'
+                  package: '$(Pipeline.Workspace)/drop/app.jar'
+                  runtimeStack: 'JAVA|17-java17'
 
-              # Set startup command cho Linux App Service
-              # - task: AzureCLI@2
-              #   inputs:
-              #     azureSubscription: "dopham-sc"
-              #     scriptType: "ps"
-              #     scriptLocation: "inlineScript"
-              #     inlineScript: |
-              #       az webapp config set `
-              #       --resource-group rg_dopham `
-              #       --name dopham-app `
-              #       --startup-file "java -jar /home/site/wwwroot/*.jar"
+              
