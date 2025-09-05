@@ -41,10 +41,10 @@ stages:
         DB_USERNAME: $(DB-USER)
         DB_PASSWORD: $(DB-PASSWORD)
 
-    # Rename JAR thành tên cố định app.jar
-    - script: |
-        JAR_FILE=$(ls target/*.jar | grep -v 'original' | head -n 1)
-        mv "$JAR_FILE" target/app.jar
+    # Rename JAR thành tên cố định app.jar (Windows agent dùng PowerShell)
+    - powershell: |
+        $jarFile = Get-ChildItem -Path target -Filter *.jar | Where-Object { $_.Name -notmatch "original" } | Select-Object -First 1
+        Rename-Item -Path $jarFile.FullName -NewName "app.jar"
       displayName: 'Rename JAR to app.jar'
 
     # Publish JAR as pipeline artifact để dùng cho stage Deploy
