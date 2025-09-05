@@ -74,13 +74,13 @@ stages:
                   package: '$(Pipeline.Workspace)/drop/*.jar'
 
               # Set startup command cho Linux App Service
-              - task: AzureCLI@2
-                inputs:
-                  azureSubscription: "dopham-sc"
-                  scriptType: "ps"
-                  scriptLocation: "inlineScript"
-                  inlineScript: |
-                    az webapp config set `
-                    --resource-group rg_dopham `
-                    --name dopham-app `
-                    --startup-file "java -jar /home/site/wwwroot/*.jar"
+              # - task: AzureCLI@2
+              #   inputs:
+              #     azureSubscription: "dopham-sc"
+              #     scriptType: "ps"
+              #     scriptLocation: "inlineScript"
+              #     inlineScript: |
+              #       az webapp config set `
+              #       --resource-group rg_dopham `
+              #       --name dopham-app `
+              #       --startup-file "java -jar /home/site/wwwroot/*.jar"
