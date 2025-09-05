@@ -65,6 +65,12 @@ stages:
               - download: current
                 artifact: drop
 
+              - script: |
+                  echo "Listing artifact content..."
+                  dir "$(Pipeline.Workspace)/drop"
+                displayName: "Verify downloaded artifact"
+
+
               # Deploy artifact lên Azure App Service
               - task: AzureWebApp@1
                 inputs:
