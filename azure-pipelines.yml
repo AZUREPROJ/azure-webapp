@@ -38,6 +38,7 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
       env:
+        DB_SERVER_NAME: $(DB-SERVER-NAME)
         DB_USERNAME: $(DB-USER)
         DB_PASSWORD: $(DB-PASSWORD)
 
