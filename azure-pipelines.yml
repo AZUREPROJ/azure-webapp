@@ -97,16 +97,6 @@ stages:
                   resourceGroupName: 'rg_fsa_f1_csm_ec_huutn'
                   appSettings: |
                     [
-#                      {
-#                        "name": "DB_USERNAME",
-#                        "value": "$(DB-USER)",
-#                        "slotSetting": false
-#                      },
-#                      {
-#                        "name": "DB_PASSWORD",
-#                        "value": "$(DB-PASSWORD)",
-#                        "slotSetting": false
-#                      },
                       {
                         "name": "azure.keyvault.uri",
                         "value": "https://dopham-kv.vault.azure.net/",
