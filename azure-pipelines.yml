@@ -9,6 +9,14 @@ trigger:
 
 variables:
 - group: kv-secrets
+- name: resourceGroup
+  value: 'rg_dopham'
+- name: serviceConnectionName
+  value: 'dopham-sc'
+- name: webAppName
+  value: 'dopv3-app'
+- name: keyVaultUri
+  value: 'https://dopham-kv.vault.azure.net/'
 
 stages:
 # Stage 1: Build
@@ -92,14 +100,14 @@ stages:
               # Push secrets từ variable group vào App Service settings
               - task: AzureAppServiceSettings@1
                 inputs:
-                  azureSubscription: 'dopham-sc'
-                  appName: 'dopv3-app'
-                  resourceGroupName: 'rg_fsa_f1_csm_ec_huutn'
+                  azureSubscription: $(serviceConnectionName)
+                  appName: $(webAppName)
+                  resourceGroupName: $(resourceGroup)
                   appSettings: |
                     [
                       {
-                        "name": "azure.keyvault.uri",
-                        "value": "https://dopham-kv.vault.azure.net/",
+                        "name": "spring.cloud.azure.keyvault.secret.property-sources[0].endpoint",
+                        "value": "$(keyVaultUri)",
                         "slotSetting": false
                       }
                     ]
@@ -108,9 +116,9 @@ stages:
               # Deploy artifact lên Azure App Service
               - task: AzureWebApp@1
                 inputs:
-                  azureSubscription: 'dopham-sc'
+                  azureSubscription: $(serviceConnectionName)
                   appType: 'webAppLinux'
-                  appName: 'dopv3-app'
+                  appName: $(webAppName)
                   package: '$(Pipeline.Workspace)/drop/app.jar'
                   runtimeStack: 'JAVA|17-java17'
 
