@@ -42,6 +42,7 @@ stages:
         jdkDirectory: '$(JAVA_HOME)'
         mavenVersionOption: 'Default'
         mavenOptions: '-Xmx3072m'
+        goals: 'package -Dspring.profiles.active=build'
         mavenAuthenticateFeed: false
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
@@ -86,16 +87,17 @@ stages:
                 displayName: "Verify downloaded artifact"
 
               # Set startup command cho Linux App Service
-              # - task: AzureCLI@2
-              #   inputs:
-              #     azureSubscription: "dopham-sc"
-              #     scriptType: "ps"
-              #     scriptLocation: "inlineScript"
-              #     inlineScript: |
-              #       az webapp config set `
-              #       --resource-group rg_fsa_f1_csm_ec_huutn `
-              #       --name dopham-app `
-              #       --startup-file "java -jar /home/site/wwwroot/app.jar"
+              - task: AzureCLI@2
+                inputs:
+                   azureSubscription: $(serviceConnectionName)
+                   scriptType: "ps"
+                   scriptLocation: "inlineScript"
+                   inlineScript: |
+                     az webapp config set `
+                     --resource-group $(resourceGroup) `
+                     --name $(webAppName) `
+                     --startup-file "java -jar /home/site/wwwroot/app.jar --spring.profiles.active=deploy"
+                displayName: 'Set startup command for deploy profile'
 
               # Push secrets từ variable group vào App Service settings
               - task: AzureAppServiceSettings@1
@@ -106,7 +108,7 @@ stages:
                   appSettings: |
                     [
                       {
-                        "name": "spring.cloud.azure.keyvault.secret.property-sources[0].endpoint",
+                        "name": "spring.cloud.azure.keyvault.secret.endpoint",
                         "value": "$(keyVaultUri)",
                         "slotSetting": false
                       }
