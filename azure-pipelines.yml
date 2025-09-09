@@ -38,9 +38,9 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
       env:
-        DB_SERVER_NAME: $(DB-SERVER-NAME)
-        DB_USERNAME: $(DB-USER)
-        DB_PASSWORD: $(DB-PASSWORD)
+        db.servername: $(DB-SERVERNAME)
+        db.username: $(DB-USER)
+        db.password: $(DB-PASSWORD)
 
     # Rename JAR thành tên cố định app.jar (Windows agent dùng PowerShell)
     - powershell: |
@@ -97,14 +97,19 @@ stages:
                   resourceGroupName: 'rg_fsa_f1_csm_ec_huutn'
                   appSettings: |
                     [
+#                      {
+#                        "name": "DB_USERNAME",
+#                        "value": "$(DB-USER)",
+#                        "slotSetting": false
+#                      },
+#                      {
+#                        "name": "DB_PASSWORD",
+#                        "value": "$(DB-PASSWORD)",
+#                        "slotSetting": false
+#                      },
                       {
-                        "name": "DB_USERNAME",
-                        "value": "$(DB-USER)",
-                        "slotSetting": false
-                      },
-                      {
-                        "name": "DB_PASSWORD",
-                        "value": "$(DB-PASSWORD)",
+                        "name": "azure.keyvault.uri",
+                        "value": "https://dopham-kv.vault.azure.net/",
                         "slotSetting": false
                       }
                     ]

@@ -59,6 +59,13 @@
 			<version>9.2.0</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.azure.spring</groupId>
+			<artifactId>spring-cloud-azure-starter-keyvault-secrets</artifactId>
+			<version>5.16.0</version> <!-- chọn version tương thích -->
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
