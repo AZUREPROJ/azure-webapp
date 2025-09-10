@@ -47,9 +47,9 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
       env:
-        db.servername: $(DB-SERVERNAME)
-        db.username: $(DB-USER)
-        db.password: $(DB-PASSWORD)
+        sqlServerName: $(sqlServerName)
+        dbUserName: $(dbUserName)
+        dbPassword: $(dbPassword)
 
     # Rename JAR thành tên cố định app.jar (Windows agent dùng PowerShell)
     - powershell: |
